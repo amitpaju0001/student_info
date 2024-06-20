@@ -4,7 +4,8 @@ import 'package:student_info/ui/screen/student_screen.dart';
 
 Future main()async{
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseService().createDatabase();
+  DatabaseService databaseService = DatabaseService();
+  await databaseService.getDatabase();
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {

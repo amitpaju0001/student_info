@@ -19,7 +19,7 @@ class _StudentScreenState extends State<StudentScreen> {
   }
   Future loadStudent() async{
     await Future.delayed(Duration (seconds: 2));
-    students = await DatabaseService().getAllStudent();
+    students = await DatabaseService().fetchStudents();
     setState(() {
 
     });
