@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:student_info/service/database_service.dart';
 import 'package:student_info/ui/screen/student_screen.dart';
 
-Future main()async{
+ Future main()async{
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseService databaseService = DatabaseService();
-  await databaseService.getDatabase();
+  await DatabaseService.getDatabase();
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {

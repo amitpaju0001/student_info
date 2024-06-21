@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:student_info/model/student_model.dart';
 import 'package:student_info/service/database_service.dart';
 import 'package:student_info/ui/screen/add_student_screen.dart';
+import 'package:student_info/ui/screen/update_student_screen.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({super.key});
@@ -12,13 +13,13 @@ class StudentScreen extends StatefulWidget {
 
 class _StudentScreenState extends State<StudentScreen> {
   List<StudentModel> students = [];
+  DatabaseService databaseService = DatabaseService();
   @override
   void initState(){
     loadStudent();
     super.initState();
   }
   Future loadStudent() async{
-    await Future.delayed(Duration (seconds: 2));
     students = await DatabaseService().fetchStudents();
     setState(() {
 
@@ -50,8 +51,28 @@ class _StudentScreenState extends State<StudentScreen> {
               subtitle: Text(
                 'id: ${studentModel.id} | fName: ${studentModel.fName} | village: ${studentModel.village}'
               ),
+              trailing: Container(
+                width: 100,
+                child: Row(
+                  children: [
+                    IconButton(onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context)  {
+                              return UpdateStudentScreen(student: studentModel);
+                            }
+                          ));
+                       loadStudent();
+                    }, icon: Icon(Icons.edit)),
+                    IconButton(onPressed: ()async {
+                       DatabaseService.deleteStudent(studentModel.id!);
+                      loadStudent();
+                    }, icon: Icon(Icons.delete)),
+                  ],
+                ),
+              ),
               onTap: () {
-
               },
             ),
           );

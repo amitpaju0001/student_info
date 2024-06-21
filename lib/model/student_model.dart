@@ -6,7 +6,7 @@ class StudentModel{
   String fName;
   String village;
 
-  StudentModel({this.id, required this.name,required this.fName,required this.village,});
+  StudentModel( {this.id, required this.name,required this.fName,required this.village,});
   Map<String,dynamic> toMap() {
     var map = <String, dynamic>{
       'name': name,
