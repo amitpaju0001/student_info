@@ -29,15 +29,15 @@ class _StudentScreenState extends State<StudentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Student Home'),
+        title: const Text('Student Home'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AddStudentScreen();
+            return const AddStudentScreen();
           },));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: ListView.builder(
         itemCount: students.length,
@@ -51,7 +51,7 @@ class _StudentScreenState extends State<StudentScreen> {
               subtitle: Text(
                 'id: ${studentModel.id} | fName: ${studentModel.fName} | village: ${studentModel.village}'
               ),
-              trailing: Container(
+              trailing: SizedBox(
                 width: 100,
                 child: Row(
                   children: [
@@ -64,11 +64,11 @@ class _StudentScreenState extends State<StudentScreen> {
                             }
                           ));
                        loadStudent();
-                    }, icon: Icon(Icons.edit)),
+                    }, icon: const Icon(Icons.edit)),
                     IconButton(onPressed: ()async {
                        DatabaseService.deleteStudent(studentModel.id!);
                       loadStudent();
-                    }, icon: Icon(Icons.delete)),
+                    }, icon: const Icon(Icons.delete)),
                   ],
                 ),
               ),
