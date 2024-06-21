@@ -4,7 +4,6 @@ import 'package:student_info/ui/screen/student_screen.dart';
 
  Future main()async{
   WidgetsFlutterBinding.ensureInitialized();
-  DatabaseService databaseService = DatabaseService();
   await DatabaseService.getDatabase();
   runApp(const MyApp());
 }
