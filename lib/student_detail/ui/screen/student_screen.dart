@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:student_info/model/student_model.dart';
-import 'package:student_info/service/database_service.dart';
-import 'package:student_info/ui/screen/add_student_screen.dart';
-import 'package:student_info/ui/screen/update_student_screen.dart';
+import 'package:student_info/student_detail/model/student_model.dart';
+import 'package:student_info/student_detail/service/database_service.dart';
+import 'package:student_info/student_detail/ui/screen/add_student_screen.dart';
+import 'package:student_info/student_detail/ui/screen/update_student_screen.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({super.key});
@@ -23,7 +23,7 @@ class _StudentScreenState extends State<StudentScreen> {
     super.initState();
   }
 
-  Future<void> loadStudent() async {
+  Future loadStudent() async {
     students = await DatabaseService().fetchStudents();
     setState(() {});
   }
@@ -32,7 +32,7 @@ class _StudentScreenState extends State<StudentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Student List'),
+        title: const Text('Student List'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -59,8 +59,8 @@ class _StudentScreenState extends State<StudentScreen> {
                     if (std.image.isNotEmpty)
                       Image.file(
                         File(std.image),
-                        height: 100,
-                        width: 100,
+                        height: 120,
+                        width: 120,
                         fit: BoxFit.cover,
                       ),
                     studentRecord('Name', std.name),
@@ -94,14 +94,14 @@ class _StudentScreenState extends State<StudentScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Delete Student'),
-                                  content: Text('Are you sure you want to delete this student?'),
+                                  title: const Text('Delete Student'),
+                                  content: const Text('Are you sure you want to delete this student?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop(); // Close the dialog
                                       },
-                                      child: Text('Cancel'),
+                                      child: const Text('Cancel'),
                                     ),
                                     TextButton(
                                       onPressed: () async {
@@ -109,19 +109,17 @@ class _StudentScreenState extends State<StudentScreen> {
                                         loadStudent();
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text('Delete'),
+                                      child: const Text('Delete'),
                                     ),
                                   ],
                                 );
                               },
                             );
                           },
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                         ),
-
                       ],
                     ),
-
                   ],
                 ),
               ),

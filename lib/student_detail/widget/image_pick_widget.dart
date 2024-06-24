@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:student_info/service/image_picker_service.dart';
+import 'package:student_info/student_detail/service/image_picker_service.dart';
 
 class ImagePickWidget extends StatefulWidget {
   final Function(File?) onImagePicked;

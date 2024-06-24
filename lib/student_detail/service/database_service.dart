@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-import 'package:student_info/model/student_model.dart';
+import 'package:student_info/student_detail/model/student_model.dart';
 
 class DatabaseService {
   static Database? _database;
@@ -29,11 +28,11 @@ class DatabaseService {
               'name TEXT, '
               'fName TEXT, '
               'village TEXT, '
-              'fee INTEGER, '
+              'fees TEXT, '
               'paidFee INTEGER, '
               'pendingFee INTEGER, '
               'joinDate TEXT,'
-          'image TEXT'
+              'image TEXT'
               ')',
         );
       },
@@ -44,15 +43,15 @@ class DatabaseService {
     Database database = await getDatabase();
     await database
         .rawInsert(
-      'INSERT INTO $tableName (name, fName, fee, village, paidFee, pendingFee, joinDate,image) '
+      'INSERT INTO $tableName (name, fName,fees, village, paidFee, pendingFee, joinDate,image) '
           'VALUES (?, ?, ?, ?, ?, ?, ?,?)',
       [
         student.name,
         student.fName,
-        student.fees,
+        student.fees.toString(),
         student.village,
-        student.paidFee,
-        student.pendingFee,
+        student.paidFee.toString(),
+        student.pendingFee.toString(),
         student.joinDate,
         student.image
       ],);
@@ -73,18 +72,20 @@ class DatabaseService {
     Database database = await getDatabase();
     String sql = '''
       UPDATE $tableName 
-      SET name = ?, fName = ?, village = ? ,fee = ?,pendingFee = ?,paidFee = ?,joinDate = ?
+      SET name = ?, fName = ?, village = ? ,fees = ?,pendingFee = ?,paidFee = ?,joinDate = ?,image = ?
       WHERE id = ?
     ''';
     return await database.rawUpdate(sql, [
       student.name,
       student.fName,
       student.village,
-      student.paidFee,
-      student.pendingFee,
+      student.paidFee.toString(),
+      student.pendingFee.toString(),
       student.joinDate,
-      student.fees,
+      student.fees.toString(),
+      student.image,
       student.id,
+
     ]);
   }
 

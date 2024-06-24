@@ -1,19 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:student_info/model/reuse_validator_model.dart';
-import 'package:student_info/model/student_model.dart';
-import 'package:student_info/service/database_service.dart';
-import 'package:student_info/widget/image_pick_widget.dart';
-import 'package:student_info/widget/reuse_text_field.dart';
+import 'package:student_info/student_detail/model/reuse_validator_model.dart';
+import 'package:student_info/student_detail/model/student_model.dart';
+import 'package:student_info/student_detail/service/database_service.dart';
+import 'package:student_info/student_detail/widget/image_pick_widget.dart';
+import 'package:student_info/student_detail/widget/reuse_text_field.dart';
 
 class AddStudentScreen extends StatefulWidget {
   const AddStudentScreen({super.key});
-
   @override
   State<AddStudentScreen> createState() => _AddStudentScreenState();
 }
-
 class _AddStudentScreenState extends State<AddStudentScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
@@ -23,18 +21,17 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   TextEditingController joinDateController = TextEditingController();
   TextEditingController pendingFeeController = TextEditingController();
   TextEditingController paidFeeController = TextEditingController();
-
   final GlobalKey<FormState> formKey = GlobalKey();
   File? image;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Students'),
+        title: const Text('Add Students'),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Form(
             key: formKey,
             child: Column(
@@ -81,7 +78,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     hintText: 'Paid Fees',
                     validator: reuseValidatorModel
                 ),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 ElevatedButton(onPressed: ()async {
                   if(formKey.currentState?.validate()?? false) {
                     StudentModel newStudent = StudentModel(
@@ -97,7 +94,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     DatabaseService databaseService = DatabaseService();
                     await databaseService.insertStudent(newStudent);
                   }
-                  }, child: Text('add'))
+                  }, child: const Text('add'))
               ],
             ),
           ),

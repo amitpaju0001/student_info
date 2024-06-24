@@ -16,7 +16,7 @@ class StudentModel{
       'name': name,
       'fName': fName,
       'village': village,
-      'fee': fees,
+      'fees': fees,
       'joinDate': joinDate,
       'image': image,
       'pendingFee':pendingFee,
@@ -33,11 +33,11 @@ class StudentModel{
     name: map['name'],
     fName: map['fName'],
     village: map['village'],
-      fees: map['fee'],
+        fees: map['fees'].toString(),
       joinDate: map['joinDate'],
       image: map['image'],
-      pendingFee: map['pendingFee'],
-      paidFee: map['paidFee']
+      pendingFee: map['pendingFee'].toString(),
+      paidFee: map['paidFee'].toString()
     );
   }
 }
