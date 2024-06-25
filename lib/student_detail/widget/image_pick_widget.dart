@@ -1,49 +1,57 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:student_info/student_detail/service/image_picker_service.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ImagePickWidget extends StatefulWidget {
-  final Function(File?) onImagePicked;
+  final Function(File) onImagePicked;
 
   const ImagePickWidget({super.key, required this.onImagePicked});
 
   @override
-  ImagePickWidgetState createState() => ImagePickWidgetState();
+  _ImagePickWidgetState createState() => _ImagePickWidgetState();
 }
-class ImagePickWidgetState extends State<ImagePickWidget> {
-  File? image;
-  final ImagePickService imagePickService = ImagePickService();
-  Future pickImage() async {
-    final File? pickedImage = await imagePickService.pickImage();
-    if (pickedImage != null) {
+
+class _ImagePickWidgetState extends State<ImagePickWidget> {
+  File? _pickedImage;
+
+  Future<void> _pickImage(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
       setState(() {
-        image = pickedImage;
+        _pickedImage = File(image.path);
       });
-      widget.onImagePicked(pickedImage);
+      widget.onImagePicked(File(image.path));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: pickImage,
-      child: image == null
-          ? Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(40),
+    return Column(
+      children: [
+        InkWell(
+          onTap: () => _pickImage(context),
+          child: CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.grey[200],
+            backgroundImage:
+            _pickedImage != null ? FileImage(_pickedImage!) : null,
+            child: _pickedImage == null
+                ? const Icon(
+              Icons.camera_alt,
+              size: 50,
+              color: Colors.grey,
+            )
+                : null,
+          ),
         ),
-        height: 150,
-        width: 150,
-        child: const Icon(Icons.add_a_photo, size: 50),
-      )
-          : Image.file(
-        image!,
-        height: 150,
-        width: 150,
-        fit: BoxFit.cover,
-      ),
+        if (_pickedImage != null) const SizedBox(height: 10),
+        if (_pickedImage != null)
+          const Text('Tap to change image',
+              style: TextStyle(color: Colors.grey)),
+      ],
     );
   }
 }

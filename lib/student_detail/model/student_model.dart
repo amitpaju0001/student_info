@@ -35,7 +35,7 @@ class StudentModel{
     village: map['village'],
         fees: map['fees'].toString(),
       joinDate: map['joinDate'],
-      image: map['image'],
+      image: map['image'].toString(),
       pendingFee: map['pendingFee'].toString(),
       paidFee: map['paidFee'].toString()
     );

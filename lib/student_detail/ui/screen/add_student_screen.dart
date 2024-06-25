@@ -9,20 +9,22 @@ import 'package:student_info/student_detail/widget/reuse_text_field.dart';
 
 class AddStudentScreen extends StatefulWidget {
   const AddStudentScreen({super.key});
+
   @override
   State<AddStudentScreen> createState() => _AddStudentScreenState();
 }
+
 class _AddStudentScreenState extends State<AddStudentScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
   TextEditingController villageController = TextEditingController();
   TextEditingController feesController = TextEditingController();
-  TextEditingController imageController = TextEditingController();
   TextEditingController joinDateController = TextEditingController();
   TextEditingController pendingFeeController = TextEditingController();
   TextEditingController paidFeeController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey();
   File? image;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,54 +49,59 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                 ReuseTextField(
                   controller: nameController,
                   hintText: 'Name',
-                  validator: reuseValidatorModel
+                  validator: reuseValidatorModel,
                 ),
-              ReuseTextField(
+                ReuseTextField(
                   controller: fNameController,
                   hintText: 'Father Name',
-                  validator: reuseValidatorModel
-              ),ReuseTextField(
-              controller: villageController,
-              hintText: 'Village',
-              validator: reuseValidatorModel
-                  ),
-                ReuseTextField(
-                    controller: feesController,
-                    hintText: 'Total Fees',
-                    validator: reuseValidatorModel
+                  validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                    controller: joinDateController,
-                    hintText: 'Joining Date',
-                    validator: reuseValidatorModel
+                  controller: villageController,
+                  hintText: 'Village',
+                  validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                    controller: pendingFeeController,
-                    hintText: 'Pending Fees',
-                    validator: reuseValidatorModel
+                  controller: feesController,
+                  hintText: 'Total Fees',
+                  validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                    controller: paidFeeController,
-                    hintText: 'Paid Fees',
-                    validator: reuseValidatorModel
+                  controller: joinDateController,
+                  hintText: 'Joining Date',
+                  validator: reuseValidatorModel,
                 ),
-                const SizedBox(height: 20,),
-                ElevatedButton(onPressed: ()async {
-                  if(formKey.currentState?.validate()?? false) {
-                    StudentModel newStudent = StudentModel(
+                ReuseTextField(
+                  controller: pendingFeeController,
+                  hintText: 'Pending Fees',
+                  validator: reuseValidatorModel,
+                ),
+                ReuseTextField(
+                  controller: paidFeeController,
+                  hintText: 'Paid Fees',
+                  validator: reuseValidatorModel,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (formKey.currentState?.validate() ?? false) {
+                      StudentModel newStudent = StudentModel(
                         name: nameController.text,
                         fName: fNameController.text,
                         village: villageController.text,
                         fees: feesController.text,
-                        image: imageController.text,
+                        image: image?.path ?? '',
                         joinDate: joinDateController.text,
                         pendingFee: pendingFeeController.text,
-                        paidFee: paidFeeController.text
-                    );
-                    DatabaseService databaseService = DatabaseService();
-                    await databaseService.insertStudent(newStudent);
-                  }
-                  }, child: const Text('add'))
+                        paidFee: paidFeeController.text,
+                      );
+                      DatabaseService databaseService = DatabaseService();
+                      await databaseService.insertStudent(newStudent);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
               ],
             ),
           ),
