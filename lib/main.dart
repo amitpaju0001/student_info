@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:student_info/student_detail/service/database_service.dart';
 import 'package:student_info/student_detail/ui/screen/welcome_screen.dart';
 
 
