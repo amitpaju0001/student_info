@@ -25,6 +25,20 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final GlobalKey<FormState> formKey = GlobalKey();
   File? image;
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        joinDateController.text = "${picked.toLocal()}".split(' ')[0];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,10 +80,30 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   hintText: 'Total Fees',
                   validator: reuseValidatorModel,
                 ),
-                ReuseTextField(
-                  controller: joinDateController,
-                  hintText: 'Joining Date',
-                  validator: reuseValidatorModel,
+                TextFormField(
+                  controller:  joinDateController,
+                  decoration: InputDecoration(
+                    labelText: 'Join Date',
+                    hintText: 'Join Date',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                  validator:reuseValidatorModel ,
+                  readOnly: true,
                 ),
                 ReuseTextField(
                   controller: pendingFeeController,
@@ -97,7 +131,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                       );
                       DatabaseService databaseService = DatabaseService();
                       await databaseService.insertStudent(newStudent);
-                      Navigator.pop(context);
+                      Navigator.pop(context,true);
                     }
                   },
                   child: const Text('Add'),

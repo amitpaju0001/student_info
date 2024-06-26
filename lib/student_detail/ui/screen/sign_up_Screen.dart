@@ -108,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: InkWell(
                         onTap: () {
                           if(formKey.currentState?.validate()??false) {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const StudentScreen(),

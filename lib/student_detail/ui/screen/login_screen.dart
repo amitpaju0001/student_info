@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
 import 'package:student_info/student_detail/shared/const.dart';
 import 'package:student_info/student_detail/ui/screen/sign_up_Screen.dart';
@@ -18,9 +18,37 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
   @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const StudentScreen()),
+      );
+    }
+  }
+
+  Future<void> _login() async {
+    if (formKey.currentState?.validate() ?? false) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const StudentScreen()),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
-      color:Colors.white,
+      color: Colors.white,
       child: SingleChildScrollView(
         child: SafeArea(
           child: Form(
@@ -41,9 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.all(12),
                   child: TextFormField(
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text(StringConst.usernameLabelText),
-                        prefixIcon: Icon(Icons.person)),
+                      border: OutlineInputBorder(),
+                      label: Text(StringConst.usernameLabelText),
+                      prefixIcon: Icon(Icons.person),
+                    ),
                     validator: reuseValidatorModel,
                   ),
                 ),
@@ -53,24 +82,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: TextFormField(
-                    obscureText: passToggle ? true : false,
+                    obscureText: passToggle,
                     decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        label: const Text(StringConst.passwordLabelText),
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            if (passToggle == true) {
-                              passToggle = false;
-                            } else {
-                              passToggle = true;
-                            }
-                            setState(() {});
-                          },
-                          child: passToggle
-                              ? const Icon(CupertinoIcons.eye_slash_fill)
-                              : const Icon(CupertinoIcons.eye_fill),
-                        )),
+                      border: const OutlineInputBorder(),
+                      label: const Text(StringConst.passwordLabelText),
+                      prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          setState(() {
+                            passToggle = !passToggle;
+                          });
+                        },
+                        child: passToggle
+                            ? const Icon(CupertinoIcons.eye_slash_fill)
+                            : const Icon(CupertinoIcons.eye_fill),
+                      ),
+                    ),
                     validator: reuseValidatorModel,
                   ),
                 ),
@@ -82,25 +109,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(10),
                       child: InkWell(
-                        onTap: () {
-                          if(formKey.currentState?.validate()??false) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const StudentScreen(),
-                                ));
-                          }
-                        },
+                        onTap: _login,
                         child: const Padding(
-                          padding:
-                          EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                           child: Center(
                             child: Text(
                               'Log In',
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -117,24 +136,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text(
                       StringConst.noAccount,
                       style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black54),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black54,
+                      ),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignUpScreen(),
-                            ));
+                          context,
+                          MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                        );
                       },
                       child: const Text(
                         StringConst.createAccount,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color:Colors.blue,
+                          color: Colors.blue,
                         ),
                       ),
                     ),

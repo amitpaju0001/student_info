@@ -3,11 +3,10 @@ import 'package:student_info/student_detail/service/database_service.dart';
 import 'package:student_info/student_detail/ui/screen/welcome_screen.dart';
 
 
- Future main()async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseService.getDatabase();
+void main() {
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

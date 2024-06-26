@@ -39,7 +39,7 @@ class WelcomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const LoginScreen(),
@@ -63,7 +63,7 @@ class WelcomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const SignUpScreen(),

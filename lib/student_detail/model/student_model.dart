@@ -34,7 +34,7 @@ class StudentModel{
     fName: map['fName'],
     village: map['village'],
         fees: map['fees'].toString(),
-      joinDate: map['joinDate'],
+      joinDate: map['joinDate'].toString(),
       image: map['image'].toString(),
       pendingFee: map['pendingFee'].toString(),
       paidFee: map['paidFee'].toString()
