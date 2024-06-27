@@ -8,6 +8,7 @@ import 'package:student_info/student_detail/model/student_model.dart';
 class DatabaseService {
   static Database? _database;
   static String tableName = 'student';
+  static String authTable = 'auth';
 
   static Future<Database> getDatabase() async {
     if (_database != null) return _database!;
@@ -70,7 +71,7 @@ class DatabaseService {
 
   Future registerUser(UserModel userModel) async {
     Database database = await getDatabase();
-    await database.rawInsert('insert into auth values(?,?,?,?)', [
+    await database.rawInsert('insert into $authTable values(?,?,?,?)', [
       userModel.email,
       userModel.userName,
       userModel.password,
@@ -81,7 +82,7 @@ class DatabaseService {
   Future<bool> isUserExists(String email) async {
     Database database = await getDatabase();
     List list =
-        await database.rawQuery('select * from auth where email=?', [email]);
+        await database.rawQuery('select * from $authTable where email=?', [email]);
 
     if (list.isEmpty) {
       return false;
@@ -93,7 +94,7 @@ class DatabaseService {
   Future<bool> login(String email, String password) async {
     Database database = await getDatabase();
     List list = await database.rawQuery(
-        'select * from auth where email=? and password=?', [email, password]);
+        'select * from $authTable where email=? and password=?', [email, password]);
 
     if (list.isNotEmpty) {
       return false;
