@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/model/student_model.dart';
-import 'package:student_info/student_detail/service/database_service.dart';
+import 'package:student_info/student_detail/provider/database_provider.dart';
 import 'package:student_info/student_detail/ui/screen/add_student_screen.dart';
 import 'package:student_info/student_detail/ui/screen/update_student_screen.dart';
 
@@ -14,8 +15,8 @@ class StudentScreen extends StatefulWidget {
 }
 
 class _StudentScreenState extends State<StudentScreen> {
-  List<StudentModel> students = [];
-  DatabaseService databaseService = DatabaseService();
+
+
 
   @override
   void initState() {
@@ -24,12 +25,14 @@ class _StudentScreenState extends State<StudentScreen> {
   }
 
   Future<void> loadStudent() async {
-    students = await databaseService.fetchStudents();
-    setState(() {});
+    final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
+    await databaseProvider.fetchStudents();
   }
 
   @override
   Widget build(BuildContext context) {
+    final databaseProvider = Provider.of<DatabaseProvider>(context,);
+    final students = databaseProvider.students;
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
@@ -44,11 +47,11 @@ class _StudentScreenState extends State<StudentScreen> {
             loadStudent();
           }
         },
+        backgroundColor: Colors.blue,
         child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
-        backgroundColor: Colors.blue,
       ),
       body: students.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -67,14 +70,14 @@ class _StudentScreenState extends State<StudentScreen> {
                 children: [
                   if (std.image.isNotEmpty &&
                       File(std.image).existsSync())
-                    CircleAvatar(
-                      child: Image.file(
-                        File(std.image),
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
+                    Center(
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: FileImage(File(std.image)),
+                        ),
                       ),
-                    ),
+
+
                   const SizedBox(
                     height: 16,
                   ),
@@ -127,9 +130,7 @@ class _StudentScreenState extends State<StudentScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () async {
-                                      await DatabaseService.deleteStudent(
-
-                                          std.id!);
+                                      await databaseProvider.deleteStudent(std.id!);
                                       loadStudent();
                                       Navigator.of(context).pop();
                                     },
@@ -154,25 +155,28 @@ class _StudentScreenState extends State<StudentScreen> {
   }
 
   Widget studentRecord(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            '$label:',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return Padding(
+      padding: const EdgeInsets.only(left: 20,right: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 16),
-            overflow: TextOverflow.ellipsis,
+          const SizedBox(width: 80),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

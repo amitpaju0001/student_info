@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/auth/model/user_model.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
+import 'package:student_info/student_detail/provider/database_provider.dart';
 import 'package:student_info/student_detail/service/database_service.dart';
 import 'package:student_info/student_detail/shared/const.dart';
 import 'package:student_info/student_detail/ui/screen/login_screen.dart';
@@ -177,8 +179,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future register(BuildContext context) async {
-    DatabaseService databaseService = DatabaseService();
-    bool isUserExist = await databaseService.isUserExists(emailController.text);
+    final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
+    bool isUserExist = await databaseProvider.isUserExists(emailController.text);
     if (!isUserExist) {
       try {
         UserModel userModel = UserModel(
@@ -187,7 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           phone: phoneController.text,
           email: emailController.text,
         );
-        await databaseService.registerUser(userModel);
+        await databaseProvider.registerUser(userModel);
         if (mounted) {
           Navigator.pushReplacement(
             context,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
+import 'package:student_info/student_detail/provider/database_provider.dart';
 import 'package:student_info/student_detail/service/database_service.dart';
 import 'package:student_info/student_detail/shared/const.dart';
 import 'package:student_info/student_detail/ui/screen/sign_up_screen.dart';
@@ -27,8 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _checkLoginStatus() async {
-    DatabaseService databaseService = DatabaseService();
-    bool isLoggedIn = await databaseService.isUserExists('isLoggedIn');
+    final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
+    bool isLoggedIn = await databaseProvider.isUserExists('isLoggedIn');
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
@@ -39,11 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (formKey.currentState?.validate() ?? false) {
-      DatabaseService databaseService = DatabaseService();
-      bool isLogin = await databaseService.login(
+      final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
+      bool isLogin = await databaseProvider.login(
           emailController.text, passwordController.text);
       if (isLogin && mounted) {
-        await databaseService.login(
+        await databaseProvider.login(
             emailController.text, passwordController.text);
         Navigator.pushReplacement(
           context,

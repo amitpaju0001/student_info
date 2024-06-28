@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
 import 'package:student_info/student_detail/model/student_model.dart';
+import 'package:student_info/student_detail/provider/database_provider.dart';
 import 'package:student_info/student_detail/service/database_service.dart';
 import 'package:student_info/student_detail/widget/image_pick_widget.dart';
 import 'package:student_info/student_detail/widget/reuse_text_field.dart';
@@ -129,9 +131,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                         pendingFee: pendingFeeController.text,
                         paidFee: paidFeeController.text,
                       );
-                      DatabaseService databaseService = DatabaseService();
-                      await databaseService.insertStudent(newStudent);
-                      Navigator.pop(context,true);
+                      await Provider.of<DatabaseProvider>(context, listen: false).insertStudent(newStudent);
+                      Navigator.pop(context, true);
                     }
                   },
                   child: const Text('Add'),
