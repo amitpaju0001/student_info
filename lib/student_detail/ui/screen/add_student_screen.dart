@@ -111,7 +111,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
-                    if (formValidatorProvider.validateForm() ?? false) {
+                    if (formValidatorProvider.validateForm()) {
                       StudentModel newStudent = StudentModel(
                         name: formValidatorProvider.nameController.text,
                         fName: formValidatorProvider.fNameController.text,
