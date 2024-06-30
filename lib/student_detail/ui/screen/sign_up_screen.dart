@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/auth/model/user_model.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
 import 'package:student_info/student_detail/provider/database_provider.dart';
-import 'package:student_info/student_detail/service/database_service.dart';
+import 'package:student_info/student_detail/provider/form_validator_provider.dart';
 import 'package:student_info/student_detail/shared/const.dart';
 import 'package:student_info/student_detail/ui/screen/login_screen.dart';
 
@@ -17,21 +17,15 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool passToggle = true;
-  final GlobalKey<FormState> formKey = GlobalKey();
-
-  TextEditingController emailController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FormValidatorProviderSignUp>(context);
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
         child: SafeArea(
           child: Form(
-            key: formKey,
+            key: provider.formKey,
             child: Column(
               children: [
                 const SizedBox(
@@ -46,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   child: TextFormField(
-                    controller: nameController,
+                    controller: provider.nameController,
                     decoration: const InputDecoration(
                       labelText: StringConst.signUpName,
                       border: OutlineInputBorder(),
@@ -59,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   child: TextFormField(
-                    controller: emailController,
+                    controller: provider.emailController,
                     decoration: const InputDecoration(
                       labelText: StringConst.signUpEmail,
                       border: OutlineInputBorder(),
@@ -72,7 +66,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   child: TextFormField(
-                    controller: phoneController,
+                    controller: provider.phoneController,
                     decoration: const InputDecoration(
                       labelText: StringConst.signUpPhone,
                       border: OutlineInputBorder(),
@@ -85,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   child: TextFormField(
-                    controller: passwordController,
+                    controller: provider.passwordController,
                     obscureText: passToggle ? true : false,
                     decoration: InputDecoration(
                         labelText: StringConst.signUpPassword,
@@ -116,8 +110,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: BorderRadius.circular(10),
                       child: InkWell(
                         onTap: () async {
-                          if (formKey.currentState?.validate() ?? false) {
-                            await register(context);
+                          if (provider.validateForm()) {
+                            await register(context,provider);
                           }
                         },
                         child: const Padding(
@@ -178,16 +172,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future register(BuildContext context) async {
+  Future register(BuildContext context,FormValidatorProviderSignUp provider) async {
     final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
-    bool isUserExist = await databaseProvider.isUserExists(emailController.text);
+    bool isUserExist = await databaseProvider.isUserExists(provider.emailController.text);
     if (!isUserExist) {
       try {
         UserModel userModel = UserModel(
-          userName: nameController.text,
-          password: passwordController.text,
-          phone: phoneController.text,
-          email: emailController.text,
+          userName: provider.nameController.text,
+          password: provider.passwordController.text,
+          phone: provider.phoneController.text,
+          email: provider.emailController.text,
         );
         await databaseProvider.registerUser(userModel);
         if (mounted) {

@@ -118,7 +118,7 @@ class DatabaseService {
     Database database = await getDatabase();
     String sql = '''
       UPDATE $tableName 
-      SET name = ?, fName = ?, village = ? ,fees = ?,pendingFee = ?,paidFee = ?,joinDate = ?,image = ?
+      SET name = ?, fName = ?, village = ? , joinDate = ?,fees = ?,pendingFee = ?,paidFee = ?,image = ?
       WHERE id = ?
     ''';
     return await database.rawUpdate(sql, [

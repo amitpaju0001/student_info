@@ -1,11 +1,11 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
 import 'package:student_info/student_detail/model/student_model.dart';
 import 'package:student_info/student_detail/provider/database_provider.dart';
-import 'package:student_info/student_detail/service/database_service.dart';
+import 'package:student_info/student_detail/provider/form_validator_provider.dart';
+import 'package:student_info/student_detail/provider/image_picker_provider.dart';
 import 'package:student_info/student_detail/widget/image_pick_widget.dart';
 import 'package:student_info/student_detail/widget/reuse_text_field.dart';
 
@@ -17,17 +17,7 @@ class AddStudentScreen extends StatefulWidget {
 }
 
 class _AddStudentScreenState extends State<AddStudentScreen> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController fNameController = TextEditingController();
-  TextEditingController villageController = TextEditingController();
-  TextEditingController feesController = TextEditingController();
-  TextEditingController joinDateController = TextEditingController();
-  TextEditingController pendingFeeController = TextEditingController();
-  TextEditingController paidFeeController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey();
-  File? image;
-
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context,TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -36,7 +26,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     );
     if (picked != null && picked != DateTime.now()) {
       setState(() {
-        joinDateController.text = "${picked.toLocal()}".split(' ')[0];
+        controller.text = "${picked.toLocal()}".split(' ')[0];
       });
     }
   }
@@ -50,46 +40,47 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Form(
-            key: formKey,
+    child: Consumer2<FormValidatorProviderUpdate, ImagePickProvider>(
+    builder: (context, formValidatorProvider, imagePickProvider, child) {
+          return Form(
+          key: formValidatorProvider.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ImagePickWidget(
                   onImagePicked: (pickedImage) {
                     setState(() {
-                      image = pickedImage;
                     });
                   },
                 ),
                 ReuseTextField(
-                  controller: nameController,
+                  controller:  formValidatorProvider.nameController,
                   hintText: 'Name',
                   validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                  controller: fNameController,
+                  controller:formValidatorProvider.fNameController,
                   hintText: 'Father Name',
                   validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                  controller: villageController,
+                  controller: formValidatorProvider.villageController,
                   hintText: 'Village',
                   validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                  controller: feesController,
+                  controller: formValidatorProvider.feesController,
                   hintText: 'Total Fees',
                   validator: reuseValidatorModel,
                 ),
                 TextFormField(
-                  controller:  joinDateController,
+                  controller:  formValidatorProvider.joinDateController,
                   decoration: InputDecoration(
                     labelText: 'Join Date',
                     hintText: 'Join Date',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.calendar_today),
-                      onPressed: () => _selectDate(context),
+                     onPressed: () => _selectDate(context, formValidatorProvider.joinDateController),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -108,28 +99,28 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   readOnly: true,
                 ),
                 ReuseTextField(
-                  controller: pendingFeeController,
+                  controller: formValidatorProvider.pendingFeeController,
                   hintText: 'Pending Fees',
                   validator: reuseValidatorModel,
                 ),
                 ReuseTextField(
-                  controller: paidFeeController,
+                  controller: formValidatorProvider.paidFeeController,
                   hintText: 'Paid Fees',
                   validator: reuseValidatorModel,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
-                    if (formKey.currentState?.validate() ?? false) {
+                    if (formValidatorProvider.validateForm() ?? false) {
                       StudentModel newStudent = StudentModel(
-                        name: nameController.text,
-                        fName: fNameController.text,
-                        village: villageController.text,
-                        fees: feesController.text,
-                        image: image?.path ?? '',
-                        joinDate: joinDateController.text,
-                        pendingFee: pendingFeeController.text,
-                        paidFee: paidFeeController.text,
+                        name: formValidatorProvider.nameController.text,
+                        fName: formValidatorProvider.fNameController.text,
+                        village: formValidatorProvider.villageController.text,
+                        fees: formValidatorProvider.feesController.text,
+                        image: imagePickProvider.pickedImage?.path ?? '',
+                        joinDate: formValidatorProvider.joinDateController.text,
+                        pendingFee: formValidatorProvider.pendingFeeController.text,
+                        paidFee: formValidatorProvider.paidFeeController.text,
                       );
                       await Provider.of<DatabaseProvider>(context, listen: false).insertStudent(newStudent);
                       Navigator.pop(context, true);
@@ -139,9 +130,12 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                 ),
               ],
             ),
-          ),
-        ),
+          );
+    }
+      ),
+    ),
       ),
     );
+
   }
 }

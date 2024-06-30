@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/model/reuse_validator_model.dart';
 import 'package:student_info/student_detail/provider/database_provider.dart';
-import 'package:student_info/student_detail/service/database_service.dart';
+import 'package:student_info/student_detail/provider/form_validator_provider.dart';
 import 'package:student_info/student_detail/shared/const.dart';
 import 'package:student_info/student_detail/ui/screen/sign_up_screen.dart';
 import 'package:student_info/student_detail/ui/screen/student_screen.dart';
@@ -17,10 +17,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool passToggle = true;
-  final GlobalKey<FormState> formKey = GlobalKey();
-
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -39,14 +35,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _login() async {
-    if (formKey.currentState?.validate() ?? false) {
+  Future<void> _login(FormValidatorProviderLogIn provider) async {
+    if (provider.validateForm()) {
       final databaseProvider = Provider.of<DatabaseProvider>(context, listen: false);
       bool isLogin = await databaseProvider.login(
-          emailController.text, passwordController.text);
+          provider.emailController.text, provider.passwordController.text);
       if (isLogin && mounted) {
         await databaseProvider.login(
-            emailController.text, passwordController.text);
+            provider.emailController.text, provider.passwordController.text);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const StudentScreen()),
@@ -59,12 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FormValidatorProviderLogIn>(context);
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
         child: SafeArea(
           child: Form(
-            key: formKey,
+            key: provider.formKey,
             child: Column(
               children: [
                 const SizedBox(
@@ -121,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(10),
                       child: InkWell(
-                        onTap: _login,
+                        onTap: ()=> _login(provider),
                         child: const Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 15, horizontal: 40),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_info/student_detail/provider/database_provider.dart';
+import 'package:student_info/student_detail/provider/form_validator_provider.dart';
+import 'package:student_info/student_detail/provider/image_picker_provider.dart';
 import 'package:student_info/student_detail/ui/screen/welcome_screen.dart';
 
 
@@ -17,7 +19,19 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) {
           return DatabaseProvider();
-        },)
+        },),
+        ChangeNotifierProvider(create: (context) {
+          return ImagePickProvider();
+        },),
+        ChangeNotifierProvider(create: (context) {
+          return FormValidatorProviderUpdate();
+        },),
+        ChangeNotifierProvider(create: (context) {
+          return FormValidatorProviderSignUp();
+        },),
+        ChangeNotifierProvider(create: (context) {
+          return FormValidatorProviderLogIn();
+        },),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
